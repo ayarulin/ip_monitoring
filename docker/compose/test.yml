@@ -1,0 +1,30 @@
+services:
+  db:
+    image: ipmon_test/postgres_image:latest
+    build: ../containers/postgres
+    container_name: ipmon_test_postgres
+    env_file:
+      - ../env/test.env
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  rspec:
+    image: ipmon_test/rspec_image:latest
+    build:
+      context: ../..
+      dockerfile: docker/containers/rspec/Dockerfile
+    env_file:
+      - ../env/test.env
+    volumes:
+      - ../..:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_test_data:
