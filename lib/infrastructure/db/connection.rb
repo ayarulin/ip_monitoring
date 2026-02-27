@@ -1,15 +1,19 @@
 require 'sequel'
 require 'logger'
 
-module Infrastructure::Db::Connection
-  def self.build(url: ENV.fetch('DATABASE_URL'))
-    db = Sequel.connect(url)
+module Infrastructure
+  module Db
+    module Connection
+      def self.build(url: ENV.fetch('DATABASE_URL'))
+        db = Sequel.connect(url)
 
-    db.timezone = :utc
-    Sequel.typecast_timezone = :utc
+        db.timezone = :utc
+        Sequel.typecast_timezone = :utc
 
-    db.loggers << Logger.new($stdout) if ENV['DB_LOG'] == 'true'
+        db.loggers << Logger.new($stdout) if ENV['DB_LOG'] == 'true'
 
-    db
+        db
+      end
+    end
   end
 end

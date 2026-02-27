@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'sequel'
+require 'sequel/extensions/migration'
+require_relative '../connection'
+
+migrations_path = File.expand_path('../migrations', __dir__)
+db = Infrastructure::Db::Connection.build
+
+puts "Running migrations from #{migrations_path}..."
+Sequel::Migrator.run(db, migrations_path)
+puts 'Migrations completed successfully!'

@@ -13,6 +13,18 @@ services:
       timeout: 5s
       retries: 5
 
+  migrations:
+    image: ipmon_test/migrations_image:latest
+    build:
+      context: ../..
+      dockerfile: docker/containers/migrations/Dockerfile
+    container_name: ipmon_test_migrations
+    env_file:
+      - ../env/test.env
+    depends_on:
+      db:
+        condition: service_healthy
+
   rspec:
     image: ipmon_test/rspec_image:latest
     build:
@@ -25,6 +37,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
 
 volumes:
   postgres_test_data:

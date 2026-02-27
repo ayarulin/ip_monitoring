@@ -10,8 +10,6 @@ RSpec.describe Commands::AddIpAddressCmd do
 
   before(:all) do
     @db = Infrastructure::Db::Connection.build(url: ENV.fetch('DATABASE_URL'))
-    migrations_path = File.expand_path('../../../lib/infrastructure/db/migrations', __dir__)
-    Sequel::Migrator.run(@db, migrations_path)
   end
 
   before(:each) do

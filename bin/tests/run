@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-docker compose -f docker/compose/test.yml run --rm --name ipmon_test_rspec rspec sh
+docker compose -f docker/compose/test.yml run --build --rm --name ipmon_test_rspec rspec sh
