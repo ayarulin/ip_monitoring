@@ -33,7 +33,7 @@ class Core::Dao::Ips
 
   def insert_entity(entity)
     id = @dataset.insert(
-      address: entity.address,
+      address: entity.address.to_s,
       created_at: entity.created_at,
       deleted_at: entity.deleted_at
     )
@@ -48,12 +48,13 @@ class Core::Dao::Ips
 
   def update_entity(entity)
     updated = @dataset
-      .where(id: entity.id, deleted_at: nil)
+      .where(id: entity.id)
       .update(
         address: entity.address,
         deleted_at: entity.deleted_at
       )
 
+    # TODO: raise record not found error
     return nil if updated.zero?
 
     entity
@@ -62,7 +63,7 @@ class Core::Dao::Ips
   def build_entity(row)
     Core::Entities::Ip.new(
       id: row[:id],
-      address: row[:address].to_s,
+      address: row[:address],
       created_at: row[:created_at],
       deleted_at: row[:deleted_at]
     )

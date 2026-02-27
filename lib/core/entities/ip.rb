@@ -7,12 +7,7 @@ class Core::Entities::Ip < Dry::Struct
   transform_keys(&:to_sym)
 
   attribute? :id, Types::Id.optional
-  attribute  :address, Types::String
-  attribute  :enabled, Types::Bool
+  attribute  :address, Types::IPAddress
   attribute  :created_at, Types::Time
   attribute? :deleted_at, Types::Time.optional
-
-  def enabled?
-    enabled
-  end
 end

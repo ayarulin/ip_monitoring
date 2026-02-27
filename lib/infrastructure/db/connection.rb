@@ -6,13 +6,10 @@ module Infrastructure::Db::Connection
     db = Sequel.connect(url)
 
     db.timezone = :utc
-    db.typecast_timezone = :utc
+    Sequel.typecast_timezone = :utc
 
-    if ENV['DB_LOG'] == 'true'
-      db.loggers << Logger.new($stdout)
-    end
+    db.loggers << Logger.new($stdout) if ENV['DB_LOG'] == 'true'
 
     db
   end
 end
-
