@@ -10,11 +10,6 @@ RSpec.describe Applications::Api::App do
     described_class
   end
 
-  before(:each) do
-    described_class::DB[:ip_states].delete
-    described_class::DB[:ips].delete
-  end
-
   it 'responds to POST /ips' do
     header 'CONTENT_TYPE', 'application/json'
     post '/ips', { ip: '8.8.8.8', enabled: true }.to_json

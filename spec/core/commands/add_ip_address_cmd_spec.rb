@@ -1,24 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe Core::Commands::AddIpAddressCmd do
-  let(:db) { @db }
-  let(:ips) { Core::Dao::Ips.new(db: db) }
-  let(:ip_states) { Core::Dao::IpStates.new(db: db) }
-  let(:transaction) { Core::Services::Transaction.new(db: db) }
-  let(:command) { described_class.new(ips: ips, ip_states: ip_states, transaction: transaction) }
-
-  before(:all) do
-    @db = Infrastructure::Db::Connection.build
-  end
-
-  before(:each) do
-    @db[:ip_states].delete
-    @db[:ips].delete
-  end
-
-  after(:all) do
-    @db.disconnect if @db
-  end
+  let(:db) { System::Container['db'] }
+  let(:command) { System::Container['core.add_ip_address_cmd'] }
 
   it 'saves new ip' do
     now = Time.utc(2026, 1, 2, 3, 4, 5)
