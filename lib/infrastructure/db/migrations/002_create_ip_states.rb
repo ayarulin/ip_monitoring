@@ -6,10 +6,10 @@ Sequel.migration do
       column :state, :text, null: false
       column :started_at, :timestamptz, null: false
       column :ended_at, :timestamptz, null: true
-    end
 
-    add_index :ip_states, :ip_id
-    add_index :ip_states, :started_at
-    add_index :ip_states, :ip_id, unique: true, where: { ended_at: nil }
+      index :ip_id
+      index :started_at
+      index :ip_id, unique: true, where: { ended_at: nil }, name: :ip_states_ip_id_active_idx
+    end
   end
 end
