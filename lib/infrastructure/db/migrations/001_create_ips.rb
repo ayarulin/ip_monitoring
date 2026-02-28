@@ -6,8 +6,8 @@ Sequel.migration do
       column :created_at, :timestamptz, null: false
       column :deleted_at, :timestamptz, null: true
 
-      index :ips, :created_at
-      index :ips, :address, unique: true, where: { deleted_at: nil }
+      index :created_at
+      index :address, unique: true, where: { deleted_at: nil }
     end
   end
 end
