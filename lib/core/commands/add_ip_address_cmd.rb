@@ -2,7 +2,13 @@ require_relative '../dao/ips'
 require_relative '../entities/ip'
 require_relative '../../framework/action'
 
-class Commands::AddIpAddressCmd < Framework::Action
+class Commands::AddIpAddressCmd
+  include Framework::Action
+
+  def initialize(ips:)
+    @ips = ips
+  end
+
   input do
     required(:ip).filled(:string)
     required(:enabled).filled(:bool)
