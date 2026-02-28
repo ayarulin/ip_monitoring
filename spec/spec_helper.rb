@@ -23,7 +23,7 @@ RSpec.configure do |config|
   config.formatter = :documentation
 
   config.before(:suite) do
-    DatabaseCleaner[:sequel].db = System::Container['db']
+    DatabaseCleaner[:sequel].db = System::Container['infrastructure.db']
     DatabaseCleaner[:sequel].strategy = :transaction
   end
 
@@ -32,6 +32,6 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do
-    System::Container['db']&.disconnect
+    System::Container['infrastructure.db']&.disconnect
   end
 end

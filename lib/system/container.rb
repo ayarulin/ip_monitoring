@@ -9,20 +9,20 @@ module System
   end
 end
 
-System::Container.register('db', memoize: true) do
+System::Container.register('infrastructure.db', memoize: true) do
   Infrastructure::Db::Connection.build
 end
 
 System::Container.register('core.ips') do
-  Core::Dao::Ips.new(db: System::Container['db'])
+  Core::Dao::Ips.new(db: System::Container['infrastructure.db'])
 end
 
 System::Container.register('core.ip_states') do
-  Core::Dao::IpStates.new(db: System::Container['db'])
+  Core::Dao::IpStates.new(db: System::Container['infrastructure.db'])
 end
 
 System::Container.register('core.transaction') do
-  Core::Services::Transaction.new(db: System::Container['db'])
+  Core::Services::Transaction.new(db: System::Container['infrastructure.db'])
 end
 
 System::Container.register('core.add_ip_address_cmd') do

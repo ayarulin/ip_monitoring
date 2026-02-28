@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe Core::Commands::AddIpAddressCmd do
-  let(:db) { System::Container['db'] }
+  let(:db) { System::Container['infrastructure.db'] }
   let(:command) { System::Container['core.add_ip_address_cmd'] }
 
   it 'saves new ip' do
