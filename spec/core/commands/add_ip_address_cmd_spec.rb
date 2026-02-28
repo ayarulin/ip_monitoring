@@ -9,7 +9,7 @@ RSpec.describe Commands::AddIpAddressCmd do
   let(:command) { described_class.new(ips: ips) }
 
   before(:all) do
-    @db = Infrastructure::Db::Connection.build(url: ENV.fetch('DATABASE_URL'))
+    @db = Infrastructure::Db::Connection.build
   end
 
   before(:each) do
@@ -20,7 +20,7 @@ RSpec.describe Commands::AddIpAddressCmd do
     @db.disconnect if @db
   end
 
-  it 'saves new ip row' do
+  it 'saves new ip' do
     now = Time.utc(2026, 1, 2, 3, 4, 5)
 
     allow(Time).to receive(:now).and_return(now)

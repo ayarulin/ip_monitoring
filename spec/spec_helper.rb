@@ -7,4 +7,5 @@ require_relative '../lib/infrastructure'
 
 RSpec.configure do |config|
   config.order = :random
+  config.formatter = :documentation
 end
