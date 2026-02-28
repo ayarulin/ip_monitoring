@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+
+config_path = File.expand_path('../config.ru', __dir__)
+
+exec('bundle', 'exec', 'rackup', config_path)

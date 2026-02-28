@@ -2,6 +2,7 @@ require 'json'
 require 'roda'
 
 require_relative '../../boot.rb'
+require_relative '../../system/container'
 
 module Applications
   module Api
@@ -10,7 +11,9 @@ module Applications
       plugin :json_parser
       plugin :error_handler
 
-      DB = Infrastructure::Db::Connection.build
+      def self.container
+        System::Container
+      end
 
       error do |e|
         case e
@@ -27,13 +30,7 @@ module Applications
 
       route do |r|
         r.post 'ips' do
-          cmd = Core::Commands::AddIpAddressCmd.new(
-            ips: Core::Dao::Ips.new(db: DB),
-            ip_states: Core::Dao::IpStates.new(db: DB),
-            transaction: Core::Services::Transaction.new(db: DB)
-          )
-
-          cmd.call(r.params)
+          self.class.container['core.add_ip_address_cmd'].call(r.params)
 
           response.status = 201
           { status: 'ok' }
