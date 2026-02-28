@@ -29,7 +29,8 @@ module Applications
         r.post 'ips' do
           cmd = Core::Commands::AddIpAddressCmd.new(
             ips: Core::Dao::Ips.new(db: DB),
-            ip_states: Core::Dao::IpStates.new(db: DB)
+            ip_states: Core::Dao::IpStates.new(db: DB),
+            transaction: Core::Services::Transaction.new(db: DB)
           )
 
           cmd.call(r.params)

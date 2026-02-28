@@ -4,7 +4,8 @@ RSpec.describe Core::Commands::AddIpAddressCmd do
   let(:db) { @db }
   let(:ips) { Core::Dao::Ips.new(db: db) }
   let(:ip_states) { Core::Dao::IpStates.new(db: db) }
-  let(:command) { described_class.new(ips: ips, ip_states: ip_states) }
+  let(:transaction) { Core::Services::Transaction.new(db: db) }
+  let(:command) { described_class.new(ips: ips, ip_states: ip_states, transaction: transaction) }
 
   before(:all) do
     @db = Infrastructure::Db::Connection.build

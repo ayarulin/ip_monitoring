@@ -11,6 +11,7 @@ RSpec.describe Applications::Api::App do
   end
 
   before(:each) do
+    described_class::DB[:ip_states].delete
     described_class::DB[:ips].delete
   end
 
