@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-docker compose -f docker/compose/test.yml run --build --rm --name ipmon_test_rspec rspec bash
+docker compose -f docker/compose/test.yml run --build --rm --name ip_monitoring_test_rspec rspec bash

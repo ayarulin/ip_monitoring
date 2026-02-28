@@ -1,8 +1,8 @@
 services:
   db:
-    image: ipmon_test/postgres_image:latest
+    image: ip_monitoring_test/postgres_image:latest
     build: ../containers/postgres
-    container_name: ipmon_test_postgres
+    container_name: ip_monitoring_test_postgres
     env_file:
       - ../env/test.env
     volumes:
@@ -14,11 +14,11 @@ services:
       retries: 5
 
   migrations:
-    image: ipmon_test/migrations_image:latest
+    image: ip_monitoring_test/migrations_image:latest
     build:
       context: ../..
       dockerfile: docker/containers/migrations/Dockerfile
-    container_name: ipmon_test_migrations
+    container_name: ip_monitoring_test_migrations
     env_file:
       - ../env/test.env
     depends_on:
@@ -26,7 +26,7 @@ services:
         condition: service_healthy
 
   rspec:
-    image: ipmon_test/rspec_image:latest
+    image: ip_monitoring_test/rspec_image:latest
     build:
       context: ../..
       dockerfile: docker/containers/rspec/Dockerfile
