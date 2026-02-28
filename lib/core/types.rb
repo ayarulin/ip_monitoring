@@ -8,6 +8,7 @@ module Core
     Id = Coercible::Integer
     Time = Params::Time
     Bool = Params::Bool
+    IPState = Types::String.enum('enabled', 'disabled')
     IPAddress = Constructor(IPAddr) do |value|
       case value
       when IPAddr
