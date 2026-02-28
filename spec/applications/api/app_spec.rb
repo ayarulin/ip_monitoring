@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'json'
 require 'rack/test'
-require_relative '../../../applications/api/app'
+require_relative '../../../lib/applications/api/app'
 
 RSpec.describe Applications::Api::App do
   include Rack::Test::Methods

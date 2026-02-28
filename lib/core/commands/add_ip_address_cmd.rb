@@ -3,8 +3,9 @@ module Core
     class AddIpAddressCmd
       include Framework::Action
 
-      def initialize(ips:)
+      def initialize(ips:, ip_states:)
         @ips = ips
+        @ip_states = ip_states
       end
 
       input do
@@ -13,14 +14,25 @@ module Core
       end
 
       def call(input)
+        now = Time.now.utc
         entity = Core::Entities::Ip.new(
           id: nil,
           address: input[:ip],
-          created_at: Time.now.utc,
+          created_at: now,
           deleted_at: nil
         )
 
-        @ips.save(entity)
+        saved_ip = @ips.save(entity)
+        state = input[:enabled] ? 'enabled' : 'disabled'
+        ip_state = Core::Entities::IpState.new(
+          id: nil,
+          ip_id: saved_ip.id,
+          state: state,
+          started_at: now,
+          ended_at: nil
+        )
+
+        @ip_states.save(ip_state)
 
         nil
       rescue Sequel::UniqueConstraintViolation
