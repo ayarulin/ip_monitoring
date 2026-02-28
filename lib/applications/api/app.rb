@@ -1,8 +1,7 @@
 require 'json'
 require 'roda'
 
-require_relative '../../lib/core'
-require_relative '../../lib/infrastructure/db/connection'
+require_relative '../../lib/boot'
 
 module Applications
   module Api
@@ -28,7 +27,7 @@ module Applications
 
       route do |r|
         r.post 'ips' do
-          cmd = Commands::AddIpAddressCmd.new(
+          cmd = Core::Commands::AddIpAddressCmd.new(
             ips: Core::Dao::Ips.new(db: DB)
           )
 
