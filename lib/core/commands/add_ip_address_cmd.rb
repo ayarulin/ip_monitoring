@@ -1,13 +1,10 @@
+require_relative '../../system/import'
+
 module Core
   module Commands
     class AddIpAddressCmd
       include Framework::Action
-
-      def initialize(ips:, ip_states:, transaction:)
-        @ips = ips
-        @ip_states = ip_states
-        @transaction = transaction
-      end
+      include System::Import['core.ips', 'core.ip_states', 'core.transaction']
 
       input do
         required(:ip).filled(:string)
@@ -23,8 +20,8 @@ module Core
           deleted_at: nil
         )
 
-        @transaction.call do
-          ip = @ips.save(ip)
+        transaction.call do
+          ip = ips.save(ip)
           state = input[:enabled] ? 'enabled' : 'disabled'
           ip_state = Core::Entities::IpState.new(
             ip_id: ip.id,
@@ -33,7 +30,7 @@ module Core
             ended_at: nil
           )
 
-          @ip_states.save(ip_state)
+          ip_states.save(ip_state)
         end
 
         nil
