@@ -6,14 +6,12 @@ require_relative '../../../applications/api/app'
 RSpec.describe Applications::Api::App do
   include Rack::Test::Methods
 
-  let(:db) { described_class::DB }
-
   def app
     described_class
   end
 
   before(:each) do
-    db[:ips].delete
+    described_class::DB[:ips].delete
   end
 
   it 'responds to POST /ips' do

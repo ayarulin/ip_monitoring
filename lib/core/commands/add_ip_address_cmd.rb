@@ -1,31 +1,31 @@
-require_relative '../dao/ips'
-require_relative '../entities/ip'
-require_relative '../../framework/action'
+module Core
+  module Commands
+    class AddIpAddressCmd
+      include Framework::Action
 
-class Commands::AddIpAddressCmd
-  include Framework::Action
+      def initialize(ips:)
+        @ips = ips
+      end
 
-  def initialize(ips:)
-    @ips = ips
-  end
+      input do
+        required(:ip).filled(:string)
+        required(:enabled).filled(:bool)
+      end
 
-  input do
-    required(:ip).filled(:string)
-    required(:enabled).filled(:bool)
-  end
+      def call(input)
+        entity = Core::Entities::Ip.new(
+          id: nil,
+          address: input[:ip],
+          created_at: Time.now.utc,
+          deleted_at: nil
+        )
 
-  def call(input)
-    entity = Core::Entities::Ip.new(
-      id: nil,
-      address: input[:ip],
-      created_at: Time.now.utc,
-      deleted_at: nil
-    )
+        @ips.save(entity)
 
-    @ips.save(entity)
-
-    nil
-  rescue Sequel::UniqueConstraintViolation
-    raise ArgumentError, 'already exists'
+        nil
+      rescue Sequel::UniqueConstraintViolation
+        raise ArgumentError, 'already exists'
+      end
+    end
   end
 end

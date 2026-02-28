@@ -1,9 +1,6 @@
 require 'spec_helper'
-require_relative '../../../lib/core/commands/add_ip_address_cmd'
-require_relative '../../../lib/core/dao/ips'
-require_relative '../../../lib/infrastructure/db/connection'
 
-RSpec.describe Commands::AddIpAddressCmd do
+RSpec.describe Core::Commands::AddIpAddressCmd do
   let(:db) { @db }
   let(:ips) { Core::Dao::Ips.new(db: db) }
   let(:command) { described_class.new(ips: ips) }

@@ -136,6 +136,7 @@ DEPENDENCIES
   rubocop
   ruby-lsp
   sequel (~> 5.101)
+  zeitwerk (~> 2.6)
 
 BUNDLED WITH
    2.6.7

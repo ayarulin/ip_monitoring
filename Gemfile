@@ -10,6 +10,7 @@ gem 'puma', '~> 6.5'
 gem 'rspec', '~> 3.13'
 gem 'roda', '~> 3.95'
 gem 'sequel', '~> 5.101'
+gem 'zeitwerk', '~> 2.6'
 
 group :development do
   gem 'rubocop', require: false
