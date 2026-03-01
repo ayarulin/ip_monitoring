@@ -70,11 +70,11 @@ module Core
           success_checks: row[:success_checks].to_i,
           failed_checks: row[:failed_checks].to_i,
           packet_loss_percent: row[:packet_loss_percent].to_f,
-          avg_rtt_ms: row[:avg_rtt_ms],
+          avg_rtt_ms: row[:avg_rtt_ms]&.to_f,
           min_rtt_ms: row[:min_rtt_ms],
           max_rtt_ms: row[:max_rtt_ms],
-          median_rtt_ms: row[:median_rtt_ms],
-          stddev_rtt_ms: row[:stddev_rtt_ms]
+          median_rtt_ms: row[:median_rtt_ms]&.to_f,
+          stddev_rtt_ms: row[:stddev_rtt_ms]&.to_f
         }
       end
     end

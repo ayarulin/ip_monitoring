@@ -2,8 +2,7 @@ require 'spec_helper'
 require_relative '../../../lib/infrastructure/ping/ping_checker'
 
 RSpec.describe Infrastructure::Ping::PingChecker do
-  # Используем короткий таймаут для быстрого выполнения тестов
-  let(:checker) { described_class.new(timeout_sec: 2) }
+  let(:checker) { described_class.new(timeout_sec: 1) }
 
   describe '#call' do
     context 'when pinging reachable IPv4 address' do
