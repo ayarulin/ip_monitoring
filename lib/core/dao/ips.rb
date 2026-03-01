@@ -50,7 +50,7 @@ module Core
         updated = @dataset
           .where(id: entity.id)
           .update(
-            address: entity.address,
+            address: entity.address.to_s,
             deleted_at: entity.deleted_at
           )
 

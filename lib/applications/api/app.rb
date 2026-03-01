@@ -10,6 +10,7 @@ module Applications
       plugin :json
       plugin :json_parser
       plugin :error_handler
+      plugin :all_verbs
 
       def self.container
         System::Container
@@ -50,6 +51,12 @@ module Applications
           self.class.container['core.change_ip_state_cmd'].call(id: id, enabled: false)
 
           response.status = 201
+          { status: 'ok' }
+        end
+
+        r.delete 'ips', Integer do |id|
+          self.class.container['core.delete_ip_cmd'].call(id: id)
+
           { status: 'ok' }
         end
       end

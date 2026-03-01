@@ -32,3 +32,7 @@ end
 System::Container.register('core.change_ip_state_cmd') do
   Core::Commands::ChangeIpStateCmd.new
 end
+
+System::Container.register('core.delete_ip_cmd') do
+  Core::Commands::DeleteIpCmd.new
+end

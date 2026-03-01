@@ -61,4 +61,29 @@ RSpec.describe Applications::Api::App do
     expect(last_response.status).to eq(404)
     expect(JSON.parse(last_response.body)).to have_key('error')
   end
+
+  it 'responds to DELETE /ips/:id' do
+    db = System::Container['infrastructure.db']
+    add_cmd = System::Container['core.add_ip_address_cmd']
+
+    add_cmd.call(ip: '8.8.8.8', enabled: true)
+    ip_row = db[:ips].where(address: '8.8.8.8').first
+
+    delete "/ips/#{ip_row[:id]}"
+
+    expect(last_response.status).to eq(200)
+    expect(JSON.parse(last_response.body)).to eq('status' => 'ok')
+
+    ip = db[:ips].where(id: ip_row[:id]).first
+    expect(ip[:deleted_at]).not_to be_nil
+
+    state = db[:ip_states].where(ip_id: ip_row[:id], ended_at: nil).first
+    expect(state).to be_nil
+  end
+
+  it 'returns 404 for unknown ip id on delete' do
+    delete '/ips/999999'
+    expect(last_response.status).to eq(404)
+    expect(JSON.parse(last_response.body)).to have_key('error')
+  end
 end
