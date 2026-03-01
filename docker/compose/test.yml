@@ -32,6 +32,8 @@ services:
       dockerfile: docker/containers/rspec/Dockerfile
     env_file:
       - ../env/test.env
+    environment:
+      - CI=${CI:-}
     volumes:
       - ../..:/app
     depends_on:
