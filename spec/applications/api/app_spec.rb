@@ -17,4 +17,48 @@ RSpec.describe Applications::Api::App do
     expect(last_response.status).to eq(201)
     expect(JSON.parse(last_response.body)).to eq('status' => 'ok')
   end
+
+  it 'responds to POST /ips/:id/enable' do
+    db = System::Container['infrastructure.db']
+    add_cmd = System::Container['core.add_ip_address_cmd']
+
+    add_cmd.call(ip: '8.8.8.8', enabled: false)
+    ip_row = db[:ips].where(address: '8.8.8.8').first
+
+    post "/ips/#{ip_row[:id]}/enable"
+
+    expect(last_response.status).to eq(201)
+    expect(JSON.parse(last_response.body)).to eq('status' => 'ok')
+
+    state = db[:ip_states].where(ip_id: ip_row[:id], ended_at: nil).first
+    expect(state[:state]).to eq('enabled')
+  end
+
+  it 'responds to POST /ips/:id/disable' do
+    db = System::Container['infrastructure.db']
+    add_cmd = System::Container['core.add_ip_address_cmd']
+
+    add_cmd.call(ip: '8.8.8.8', enabled: true)
+    ip_row = db[:ips].where(address: '8.8.8.8').first
+
+    post "/ips/#{ip_row[:id]}/disable"
+
+    expect(last_response.status).to eq(201)
+    expect(JSON.parse(last_response.body)).to eq('status' => 'ok')
+
+    state = db[:ip_states].where(ip_id: ip_row[:id], ended_at: nil).first
+    expect(state[:state]).to eq('disabled')
+  end
+
+  it 'returns 404 for unknown ip id on enable' do
+    post '/ips/999999/enable'
+    expect(last_response.status).to eq(404)
+    expect(JSON.parse(last_response.body)).to have_key('error')
+  end
+
+  it 'returns 404 for unknown ip id on disable' do
+    post '/ips/999999/disable'
+    expect(last_response.status).to eq(404)
+    expect(JSON.parse(last_response.body)).to have_key('error')
+  end
 end

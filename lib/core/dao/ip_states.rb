@@ -25,6 +25,11 @@ module Core
         @dataset.all.map { |row| build_entity(row) }
       end
 
+      def active_for_ip(ip_id:)
+        row = @dataset.where(ip_id: ip_id, ended_at: nil).first
+        row && build_entity(row)
+      end
+
       private
 
       def insert_entity(entity)

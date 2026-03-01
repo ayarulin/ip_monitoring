@@ -28,3 +28,7 @@ end
 System::Container.register('core.add_ip_address_cmd') do
   Core::Commands::AddIpAddressCmd.new
 end
+
+System::Container.register('core.change_ip_state_cmd') do
+  Core::Commands::ChangeIpStateCmd.new
+end
