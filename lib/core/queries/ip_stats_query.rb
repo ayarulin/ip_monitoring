@@ -22,12 +22,11 @@ module Core
         ip = ips.find(input[:id])
         raise Core::Errors::NotFound, 'ip not found' unless ip
 
-        effective_from = [time_from, ip.created_at].max
-        effective_to = time_to
-
-        raise ArgumentError, 'no measurements in the specified period' if effective_to <= effective_from
-
-        stats = fetch_ip_check_stats(ip_id: ip.id, from: effective_from, to: effective_to)
+        stats = fetch_ip_check_stats(
+          ip_id: ip.id,
+          from: time_from,
+          to: time_to
+        )
 
         raise ArgumentError, 'no measurements in the specified period' if stats[:total_checks].zero?
 
