@@ -2,16 +2,16 @@
 
 source 'https://rubygems.org'
 
+gem 'concurrent-ruby', '~> 1.3'
 gem 'dry-auto_inject', '~> 1.0'
 gem 'dry-struct', '~> 1.8'
 gem 'dry-system', '~> 1.2'
 gem 'dry-types', '~> 1.8'
 gem 'dry-validation', '~> 1.10'
-gem 'concurrent-ruby', '~> 1.3'
 gem 'pg', '~> 1.6'
 gem 'puma', '~> 6.5'
-gem 'roda', '~> 3.95'
 gem 'rackup', '~> 2.2'
+gem 'roda', '~> 3.95'
 gem 'rspec', '~> 3.13'
 gem 'sequel', '~> 5.101'
 gem 'zeitwerk', '~> 2.6'
