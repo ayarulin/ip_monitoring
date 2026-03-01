@@ -1,34 +1,68 @@
-# IP monitoring app
+Это довольно развернутое решение для поставленной задачи, но я осознанно сделал его ближе к продакшн-подходу, чтобы заложить расширяемость и удобство поддержки
 
-## Загрузка кода и зависимости
+## Архитектура (в общих чертах)
 
-- `lib/boot.rb` настраивает Zeitwerk и автозагружает весь код из `lib` (кроме `infrastructure/db/migrations`).
-- `System::Container` (см. `lib/system/container.rb`) отвечает только за DI и регистрацию компонентов через boot-файлы в `lib/system/boot`.
+Проект разделен на несколько уровней, чтобы логика не смешивалась с доставкой (HTTP) и инфраструктурой (Postgres, ICMP/ping, Docker):
 
-### Компоненты контейнера
+- `lib/core`
+  - "Ядро" системы: операции над IP-адресами, правила включения/выключения мониторинга, расчет/выдача статистики.
+  - Здесь нет привязки к HTTP или конкретным рантайм-процессам.
+- `lib/applications`
+  - Два исполняемых приложения:
+    - `api` — HTTP API для управления IP и получения статистики.
+    - `ip_monitoring_worker` — фоновый воркер, который периодически запускает проверки доступности и пишет измерения в БД.
+- `lib/infrastructure`
+  - Интеграции с внешним миром: база данных, миграции, проверки доступности (ping) и т.п.
+- `lib/system`
+  - "Сборка приложения": регистрация зависимостей и wiring компонентов (API/воркер используют core-компоненты через контейнер).
 
-- Boot `:db` (`lib/system/boot/db.rb`) регистрирует компонент `db` через `Infrastructure::Db::Connection.build`.
-- Boot `:core` (`lib/system/boot/core.rb`) регистрирует:
-  - `core.ips` → `Core::Dao::Ips` c `db` из контейнера;
-  - `core.ip_states` → `Core::Dao::IpStates` c `db` из контейнера;
-  - `core.transaction` → `Core::Services::Transaction` c `db` из контейнера;
-  - `core.add_ip_address_cmd` → `Core::Commands::AddIpAddressCmd` (через auto_inject).
+## Контейнеры и окружения
 
-### Использование в приложении
+```
+docker/
+├── compose/
+│   ├── review.yml          # Docker Compose для review-окружения (API + Worker + Postgres)
+│   └── test.yml            # Docker Compose для тестов (Postgres + RSpec)
+├── containers/
+│   ├── api/Dockerfile      # Образ HTTP API (Roda + Puma)
+│   ├── worker/Dockerfile   # Образ фонового воркера (ICMP-проверки)
+│   ├── migrations/Dockerfile  # Образ для накатки миграций Sequel
+│   ├── postgres/Dockerfile    # Образ PostgreSQL
+│   └── rspec/Dockerfile    # Образ для запуска тестов
+└── env/
+    ├── review.env          # Переменные окружения для review
+    └── test.env            # Переменные окружения для тестов
+```
 
-- `Applications::Api::App` (см. `lib/applications/api/app.rb`) использует `System::Container` для получения команд:
-  - `Applications::Api::App.container['core.add_ip_address_cmd']`.
-- Продакшн-энтрипоинт `lib/applications/api/config.ru`:
-  - `require_relative 'app'` (поднимает Zeitwerk и контейнер);
-  - `System::Container.start(:db, :core)` — старт boot-компонентов;
-  - `System::Container.finalize! if ENV['RUBY_ENV'] == 'production'` — фиксация контейнера в проде;
-  - `run Applications::Api::App`.
+## Запуск для проверки (review)
 
-### Тесты
+Требования: установленный Docker (и docker compose).
 
-- `spec/spec_helper.rb` поднимает Zeitwerk и контейнер так же, как прод:
-  - `System::Container.start(:db, :core)`;
-  - `TEST_DB = System::Container['db']`.
-- `database_cleaner-sequel` использует `TEST_DB` для очистки базы между примерами.
+Запуск:
+- `bin/review/run`
 
-Таким образом, прод и тесты используют один и тот же путь инициализации зависимостей через `dry-system`, а core-логика остается независимой от инфраструктуры и контейнера.
+Остановка:
+- `bin/review/stop`
+
+Что поднимается:
+- Postgres
+- миграции (один раз, перед стартом приложений)
+- API (порт наружу `3000:3000`)
+- worker
+
+Быстрая проверка, что API жив:
+- `curl http://localhost:3000/health`
+
+## Тесты
+
+Запуск тестового окружения (поднимет контейнеры и откроет shell внутри rspec-контейнера):
+- `bin/tests/run`
+
+Дальше уже внутри контейнера можно выполнить:
+- `rspec`
+- или точечно: `rspec spec/applications/api/app_spec.rb`
+
+Остановка/зачистка тестового docker-compose проекта:
+- `bin/tests/stop`
+
+
