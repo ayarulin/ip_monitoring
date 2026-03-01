@@ -1,0 +1,59 @@
+services:
+  db:
+    image: ip_monitoring_review/postgres_image:latest
+    build: ../containers/postgres
+    container_name: ip_monitoring_review_postgres
+    env_file:
+      - ../env/review.env
+    volumes:
+      - postgres_review_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrations:
+    image: ip_monitoring_review/migrations_image:latest
+    build:
+      context: ../..
+      dockerfile: docker/containers/migrations/Dockerfile
+    container_name: ip_monitoring_review_migrations
+    env_file:
+      - ../env/review.env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    image: ip_monitoring_review/api_image:latest
+    build:
+      context: ../..
+      dockerfile: docker/containers/api/Dockerfile
+    container_name: ip_monitoring_review_api
+    env_file:
+      - ../env/review.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+  worker:
+    image: ip_monitoring_review/worker_image:latest
+    build:
+      context: ../..
+      dockerfile: docker/containers/worker/Dockerfile
+    container_name: ip_monitoring_review_worker
+    env_file:
+      - ../env/review.env
+    depends_on:
+      db:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+volumes:
+  postgres_review_data:
