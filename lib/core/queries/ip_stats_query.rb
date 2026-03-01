@@ -3,7 +3,7 @@ require_relative '../errors'
 
 module Core
   module Queries
-    class GetIpStatsQuery
+    class IpStatsQuery
       include Framework::Action
       include System::Import['infrastructure.db', 'core.ips']
 

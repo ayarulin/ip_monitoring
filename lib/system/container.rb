@@ -41,6 +41,6 @@ System::Container.register('core.delete_ip_cmd') do
   Core::Commands::DeleteIpCmd.new
 end
 
-System::Container.register('core.get_ip_stats_query') do
-  Core::Queries::GetIpStatsQuery.new
+System::Container.register('core.ip_stats_query') do
+  Core::Queries::IpStatsQuery.new
 end

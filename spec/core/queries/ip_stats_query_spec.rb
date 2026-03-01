@@ -1,7 +1,7 @@
 require 'spec_helper'
-require_relative '../../../lib/core/queries/get_ip_stats_query'
+require_relative '../../../lib/core/queries/ip_stats_query'
 
-RSpec.describe Core::Queries::GetIpStatsQuery do
+RSpec.describe Core::Queries::IpStatsQuery do
   let(:db) { System::Container['infrastructure.db'] }
   let(:add_cmd) { System::Container['core.add_ip_address_cmd'] }
   let(:ip_checks) { System::Container['core.ip_checks'] }
