@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+
+require_relative '../../../boot'
+require_relative '../../../system/container'
+require_relative '../worker'
+
+check_interval_sec = ENV.fetch('IP_MONITORING_WORKER_CHECK_INTERVAL_SEC')
+poll_interval_sec = ENV.fetch('IP_MONITORING_WORKER_POLL_INTERVAL_SEC')
+batch_size = ENV.fetch('IP_MONITORING_WORKER_BATCH_SIZE')
+threads = ENV.fetch('IP_MONITORING_WORKER_THREADS')
+
+Applications::IpMonitoringWorker::Worker.new(
+  check_interval_sec: check_interval_sec,
+  poll_interval_sec: poll_interval_sec,
+  batch_size: batch_size,
+  threads: threads
+).run

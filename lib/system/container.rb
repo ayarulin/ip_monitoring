@@ -13,6 +13,12 @@ System::Container.register('infrastructure.db', memoize: true) do
   Infrastructure::Db::Connection.build
 end
 
+System::Container.register('infrastructure.ping_checker', memoize: true) do
+  Infrastructure::Ping::PingChecker.new(
+    timeout_sec: ENV.fetch('IP_MONITORING_WORKER_PING_TIMEOUT_SEC')
+  )
+end
+
 System::Container.register('core.ips') do
   Core::Dao::Ips.new(db: System::Container['infrastructure.db'])
 end
@@ -43,4 +49,12 @@ end
 
 System::Container.register('core.ip_stats_query') do
   Core::Queries::IpStatsQuery.new
+end
+
+System::Container.register('core.ip_check_runner') do
+  Core::Services::IpCheckRunner.new
+end
+
+System::Container.register('core.reserve_due_enabled_ips') do
+  Core::Services::ReserveDueEnabledIps.new
 end

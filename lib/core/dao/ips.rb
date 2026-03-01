@@ -33,14 +33,16 @@ module Core
         id = @dataset.insert(
           address: entity.address.to_s,
           created_at: entity.created_at,
-          deleted_at: entity.deleted_at
+          deleted_at: entity.deleted_at,
+          next_check_at: entity.next_check_at
         )
 
         Core::Entities::Ip.new(
           id: id,
           address: entity.address,
           created_at: entity.created_at,
-          deleted_at: entity.deleted_at
+          deleted_at: entity.deleted_at,
+          next_check_at: entity.next_check_at
         )
       end
 
@@ -49,7 +51,8 @@ module Core
           .where(id: entity.id)
           .update(
             address: entity.address.to_s,
-            deleted_at: entity.deleted_at
+            deleted_at: entity.deleted_at,
+            next_check_at: entity.next_check_at
           )
 
         # TODO: raise record not found error
@@ -63,7 +66,8 @@ module Core
           id: row[:id],
           address: row[:address],
           created_at: row[:created_at],
-          deleted_at: row[:deleted_at]
+          deleted_at: row[:deleted_at],
+          next_check_at: row[:next_check_at]
         )
       end
     end

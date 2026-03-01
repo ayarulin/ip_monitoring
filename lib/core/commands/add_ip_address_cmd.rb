@@ -13,11 +13,13 @@ module Core
 
       def call(input)
         now = Time.now.utc
+        next_check_at = input[:enabled] ? now : nil
 
         ip = Core::Entities::Ip.new(
           address: input[:ip],
           created_at: now,
-          deleted_at: nil
+          deleted_at: nil,
+          next_check_at: next_check_at
         )
 
         transaction.call do

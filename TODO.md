@@ -41,7 +41,7 @@ API
 
 ## TBD
 [] вернуть id после создания ip
-[] dao - делаем insert, update, find, list убрать, добавить dataset
+[] dao - делаем insert, update
 
 ## Nice to have
 [] GET /ips список всех адресов, с пагинацией

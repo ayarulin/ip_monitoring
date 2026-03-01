@@ -37,6 +37,14 @@ module Core
           )
 
           ip_states.save(new_state)
+
+          ip = if desired_state == 'enabled'
+            ip.set_next_check_at(now)
+          else
+            ip.set_next_check_at(nil)
+          end
+
+          ips.save(ip)
         end
 
         nil

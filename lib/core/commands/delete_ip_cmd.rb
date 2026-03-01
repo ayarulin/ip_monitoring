@@ -26,6 +26,7 @@ module Core
           end
 
           ip = ip.set_deleted(now)
+          ip = ip.set_next_check_at(nil)
 
           ips.save(ip)
         end
