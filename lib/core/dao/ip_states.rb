@@ -16,18 +16,17 @@ module Core
         end
       end
 
-      def find(id:)
+      def find(id)
         row = @dataset.where(id: id).first
         return nil unless row
 
         build_entity(row)
       end
 
-      def active_for_ip(ip_id:)
-        row = @dataset.where(ip_id: ip_id, ended_at: nil).first
+      def find_active(id)
+        row = @dataset.where(ip_id: id, ended_at: nil).first
         row && build_entity(row)
       end
-
 
       private
 

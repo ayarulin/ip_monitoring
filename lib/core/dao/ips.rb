@@ -16,7 +16,7 @@ module Core
         end
       end
 
-      def find(id:)
+      def find(id)
         row = scope.where(id: id).first
         return nil unless row
 

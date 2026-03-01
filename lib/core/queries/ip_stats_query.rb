@@ -19,7 +19,7 @@ module Core
 
         raise ArgumentError, 'time_to must be greater than time_from' if time_to <= time_from
 
-        ip = ips.find(id: input[:id])
+        ip = ips.find(input[:id])
         raise Core::Errors::NotFound, 'ip not found' unless ip
 
         effective_from = [time_from, ip.created_at].max

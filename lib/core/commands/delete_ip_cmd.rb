@@ -14,11 +14,11 @@ module Core
       def call(input)
         now = Time.now.utc
 
-        ip = ips.find(id: input[:id])
+        ip = ips.find(input[:id])
         raise Core::Errors::NotFound, 'ip not found' unless ip
 
         transaction.call do
-          current_state = ip_states.active_for_ip(ip_id: ip.id)
+          current_state = ip_states.find_active(ip.id)
 
           if current_state
             current_state = current_state.close(now)

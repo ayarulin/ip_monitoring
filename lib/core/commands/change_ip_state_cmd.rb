@@ -16,11 +16,11 @@ module Core
         now = Time.now.utc
         desired_state = input[:enabled] ? 'enabled' : 'disabled'
 
-        ip = ips.find(id: input[:id])
+        ip = ips.find(input[:id])
         raise Core::Errors::NotFound, 'ip not found' unless ip
 
         transaction.call do
-          current_state = ip_states.active_for_ip(ip_id: ip.id)
+          current_state = ip_states.find_active(ip.id)
 
           return nil if current_state && current_state.state == desired_state
 
