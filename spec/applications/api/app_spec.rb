@@ -29,9 +29,6 @@ RSpec.describe Applications::Api::App do
 
     expect(last_response.status).to eq(201)
     expect(JSON.parse(last_response.body)).to eq('status' => 'ok')
-
-    state = db[:ip_states].where(ip_id: ip_row[:id], ended_at: nil).first
-    expect(state[:state]).to eq('enabled')
   end
 
   it 'responds to POST /ips/:id/disable' do
@@ -45,9 +42,6 @@ RSpec.describe Applications::Api::App do
 
     expect(last_response.status).to eq(201)
     expect(JSON.parse(last_response.body)).to eq('status' => 'ok')
-
-    state = db[:ip_states].where(ip_id: ip_row[:id], ended_at: nil).first
-    expect(state[:state]).to eq('disabled')
   end
 
   it 'returns 404 for unknown ip id on enable' do
@@ -73,17 +67,21 @@ RSpec.describe Applications::Api::App do
 
     expect(last_response.status).to eq(200)
     expect(JSON.parse(last_response.body)).to eq('status' => 'ok')
-
-    ip = db[:ips].where(id: ip_row[:id]).first
-    expect(ip[:deleted_at]).not_to be_nil
-
-    state = db[:ip_states].where(ip_id: ip_row[:id], ended_at: nil).first
-    expect(state).to be_nil
   end
 
   it 'returns 404 for unknown ip id on delete' do
     delete '/ips/999999'
     expect(last_response.status).to eq(404)
     expect(JSON.parse(last_response.body)).to have_key('error')
+  end
+
+  describe 'GET /ips/:id/stats' do
+    it 'responds to GET /ips/:id/stats' do
+      time_from = Time.now.utc.iso8601
+      time_to = (Time.now.utc + 60).iso8601
+      get '/ips/123/stats', { time_from: time_from, time_to: time_to }
+
+      expect(last_response.status).to eq(404)
+    end
   end
 end

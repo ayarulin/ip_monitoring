@@ -21,6 +21,10 @@ System::Container.register('core.ip_states') do
   Core::Dao::IpStates.new(db: System::Container['infrastructure.db'])
 end
 
+System::Container.register('core.ip_checks') do
+  Core::Dao::IpChecks.new(db: System::Container['infrastructure.db'])
+end
+
 System::Container.register('core.transaction') do
   Core::Services::Transaction.new(db: System::Container['infrastructure.db'])
 end
@@ -35,4 +39,8 @@ end
 
 System::Container.register('core.delete_ip_cmd') do
   Core::Commands::DeleteIpCmd.new
+end
+
+System::Container.register('core.get_ip_stats_query') do
+  Core::Queries::GetIpStatsQuery.new
 end

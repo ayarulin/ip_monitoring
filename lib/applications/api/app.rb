@@ -59,6 +59,10 @@ module Applications
 
           { status: 'ok' }
         end
+
+        r.get 'ips', Integer, 'stats' do |id|
+          self.class.container['core.get_ip_stats_query'].call(r.params.merge(id: id))
+        end
       end
     end
   end

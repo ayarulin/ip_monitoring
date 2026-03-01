@@ -4,6 +4,9 @@ Style/Documentation:
 Style/ClassAndModuleChildren:
   Enabled: false
 
+Style/SymbolArray:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
