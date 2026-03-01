@@ -15,4 +15,4 @@ RUN bundle install
 
 COPY . .
 
-CMD ["bundle", "exec", "ruby", "lib/applications/ip_monitoring_worker/bin/run"]
+CMD ["bundle", "exec", "ruby", "lib/applications/worker/bin/run"]

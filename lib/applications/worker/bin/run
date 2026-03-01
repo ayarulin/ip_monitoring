@@ -11,7 +11,7 @@ poll_interval_sec = ENV.fetch('IP_MONITORING_WORKER_POLL_INTERVAL_SEC')
 batch_size = ENV.fetch('IP_MONITORING_WORKER_BATCH_SIZE')
 threads = ENV.fetch('IP_MONITORING_WORKER_THREADS')
 
-Applications::IpMonitoringWorker::Worker.new(
+Applications::Worker::Runner.new(
   check_interval_sec: check_interval_sec,
   poll_interval_sec: poll_interval_sec,
   batch_size: batch_size,

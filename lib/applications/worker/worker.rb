@@ -1,8 +1,8 @@
 require_relative '../../system/import'
 
 module Applications
-  module IpMonitoringWorker
-    class Worker
+  module Worker
+    class Runner
       include System::Import['core.reserve_due_enabled_ips', 'core.ip_check_runner']
 
       def initialize(
@@ -31,7 +31,7 @@ module Applications
 
         pool = Concurrent::FixedThreadPool.new(@threads)
 
-        warn("ip_monitoring_worker started threads=#{@threads} batch=#{@batch_size} interval=#{@check_interval_sec}s")
+        warn("worker started threads=#{@threads} batch=#{@batch_size} interval=#{@check_interval_sec}s")
 
         loop do
           now = Time.now.utc
