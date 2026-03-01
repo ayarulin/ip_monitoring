@@ -32,7 +32,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, :skip_ci) do
-    skip 'Skipped in CI environment' if ENV['CI']
+    skip 'Skipped in CI environment' if ENV['CI'] && !ENV['CI'].empty?
   end
 
   config.after(:suite) do
