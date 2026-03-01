@@ -2,10 +2,10 @@ require 'spec_helper'
 require_relative '../../../lib/infrastructure/ping/ping_checker'
 
 RSpec.describe Infrastructure::Ping::PingChecker do
-  let(:checker) { described_class.new(timeout_sec: 1) }
+  let(:checker) { described_class.new(timeout_sec: 2) }
 
   describe '#call' do
-    context 'when pinging reachable IPv4 address' do
+    context 'when pinging reachable IPv4 address', :skip_ci do
       it 'returns success with rtt_ms' do
         result = checker.call('8.8.8.8')
 
@@ -15,7 +15,7 @@ RSpec.describe Infrastructure::Ping::PingChecker do
       end
     end
 
-    context 'when pinging reachable IPv4 address (Cloudflare)' do
+    context 'when pinging reachable IPv4 address (Cloudflare)', :skip_ci do
       it 'returns success with rtt_ms' do
         result = checker.call('1.1.1.1')
 
@@ -62,7 +62,7 @@ RSpec.describe Infrastructure::Ping::PingChecker do
       end
     end
 
-    context 'when given IPv6 address' do
+    context 'when given IPv6 address', :skip_ci do
       it 'returns success with rtt_ms for reachable IPv6' do
         # Cloudflare IPv6 DNS
         result = checker.call('2606:4700:4700::1111')

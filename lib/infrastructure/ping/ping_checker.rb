@@ -53,6 +53,7 @@ module Infrastructure
         m = output.match(/\btime=(?<ms>[0-9]+(?:\.[0-9]+)?)\s*ms\b/i)
         return nil unless m
 
+        # TODO: уточнить нужна ли десятичная точность
         m[:ms].to_f.round
       end
     end

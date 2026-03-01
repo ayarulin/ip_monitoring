@@ -31,6 +31,10 @@ RSpec.configure do |config|
     DatabaseCleaner.cleaning { example.run }
   end
 
+  config.before(:each, :skip_ci) do
+    skip 'Skipped in CI environment' if ENV['CI']
+  end
+
   config.after(:suite) do
     System::Container['infrastructure.db']&.disconnect
   end
