@@ -4,7 +4,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     git \
     libpq-dev \
-    iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -15,4 +14,4 @@ RUN bundle install
 
 COPY . .
 
-CMD ["bundle", "exec", "ruby", "lib/applications/ip_monitoring_worker/bin/run"]
+CMD ["bundle", "exec", "ruby", "lib/applications/api/bin/run"]

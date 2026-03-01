@@ -38,14 +38,10 @@ API
 
 ---
 
-
 ## TBD
 [] вернуть id после создания ip
-[] dao - делаем insert, update
-
-## Nice to have
-[] GET /ips список всех адресов, с пагинацией
 
 ## Framework
 [] serializers
+[] вынести dao 
 [] иммутабельные entity возможно не очень привычно, по-рубишному можно реализовать на PORO + dry-types

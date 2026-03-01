@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-docker compose -f docker/compose/test.yml down --remove-orphans
+docker compose -p test -f docker/compose/test.yml down --remove-orphans

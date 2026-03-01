@@ -3,5 +3,6 @@
 require 'bundler/setup'
 
 config_path = File.expand_path('../config.ru', __dir__)
+port = ENV.fetch('IP_MONITORING_API_PORT')
 
-exec('bundle', 'exec', 'rackup', config_path)
+exec('bundle', 'exec', 'rackup', '--host', '0.0.0.0', '--port', port, config_path)

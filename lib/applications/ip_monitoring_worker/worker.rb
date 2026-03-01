@@ -6,11 +6,15 @@ module Applications
       include System::Import['core.reserve_due_enabled_ips', 'core.ip_check_runner']
 
       def initialize(
+        reserve_due_enabled_ips:,
+        ip_check_runner:,
         check_interval_sec:,
         poll_interval_sec:,
         batch_size:,
         threads:
       )
+        @reserve_due_enabled_ips = reserve_due_enabled_ips
+        @ip_check_runner = ip_check_runner
         @check_interval_sec = Integer(check_interval_sec)
         @poll_interval_sec = Float(poll_interval_sec)
         @batch_size = Integer(batch_size)

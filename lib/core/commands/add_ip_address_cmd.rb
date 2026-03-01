@@ -35,7 +35,7 @@ module Core
           ip_states.save(ip_state)
         end
 
-        nil
+        ip.id
       rescue Sequel::UniqueConstraintViolation
         raise ArgumentError, 'already exists'
       end

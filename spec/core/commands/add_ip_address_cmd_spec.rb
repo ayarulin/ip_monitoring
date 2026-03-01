@@ -9,11 +9,12 @@ RSpec.describe Core::Commands::AddIpAddressCmd do
 
     allow(Time).to receive(:now).and_return(now)
 
-    command.call(ip: '8.8.8.8', enabled: true)
+    result = command.call(ip: '8.8.8.8', enabled: true)
 
     row = db[:ips].where(address: '8.8.8.8').first
     state_row = db[:ip_states].where(ip_id: row[:id]).first
 
+    expect(result).to eq(row[:id])
     expect(row).not_to be_nil
     expect(row[:address].to_s).to eq('8.8.8.8')
     expect(row[:created_at]).to eq(now)

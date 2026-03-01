@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+docker compose -p review -f docker/compose/review.yml down --remove-orphans

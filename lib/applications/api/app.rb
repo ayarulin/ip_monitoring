@@ -33,11 +33,15 @@ module Applications
       end
 
       route do |r|
+        r.get 'health' do
+          { status: 'ok' }
+        end
+
         r.post 'ips' do
-          self.class.container['core.add_ip_address_cmd'].call(r.params)
+          id = self.class.container['core.add_ip_address_cmd'].call(r.params)
 
           response.status = 201
-          { status: 'ok' }
+          { id: id }
         end
 
         r.post 'ips', Integer, 'enable' do |id|

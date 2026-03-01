@@ -4,11 +4,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     git \
     libpq-dev \
+    iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
+RUN gem install bundler -v "4.0.7" --no-document
 RUN bundle install
 
 COPY . .

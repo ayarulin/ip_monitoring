@@ -15,7 +15,9 @@ RSpec.describe Applications::Api::App do
     post '/ips', { ip: '8.8.8.8', enabled: true }.to_json
 
     expect(last_response.status).to eq(201)
-    expect(JSON.parse(last_response.body)).to eq('status' => 'ok')
+    body = JSON.parse(last_response.body)
+    expect(body).to have_key('id')
+    expect(body['id']).to be_a(Integer)
   end
 
   it 'responds to POST /ips/:id/enable' do

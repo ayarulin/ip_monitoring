@@ -30,7 +30,7 @@ module Core
 
         raise ArgumentError, 'no measurements in the specified period' if stats[:total_checks].zero?
 
-        stats
+        stats.merge(ip: ip.address)
       end
 
       private
