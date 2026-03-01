@@ -27,7 +27,7 @@ module Core
 
         raise ArgumentError, 'no measurements in the specified period' if effective_to <= effective_from
 
-        stats = calculate_stats(ip_id: ip.id, from: effective_from, to: effective_to)
+        stats = fetch_ip_check_stats(ip_id: ip.id, from: effective_from, to: effective_to)
 
         raise ArgumentError, 'no measurements in the specified period' if stats[:total_checks].zero?
 
@@ -36,7 +36,7 @@ module Core
 
       private
 
-      def calculate_stats(ip_id:, from:, to:)
+      def fetch_ip_check_stats(ip_id:, from:, to:)
         ip_states_ds = ip_states.dataset
 
         ds = ip_checks.dataset
