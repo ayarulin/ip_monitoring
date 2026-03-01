@@ -1,6 +1,8 @@
 module Core
   module Dao
     class IpStates
+      attr_reader :dataset
+
       def initialize(db:)
         @db = db
         @dataset = @db[:ip_states]
@@ -21,14 +23,11 @@ module Core
         build_entity(row)
       end
 
-      def list
-        @dataset.all.map { |row| build_entity(row) }
-      end
-
       def active_for_ip(ip_id:)
         row = @dataset.where(ip_id: ip_id, ended_at: nil).first
         row && build_entity(row)
       end
+
 
       private
 

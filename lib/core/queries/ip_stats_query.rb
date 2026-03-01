@@ -5,7 +5,7 @@ module Core
   module Queries
     class IpStatsQuery
       include Framework::Action
-      include System::Import['infrastructure.db', 'core.ips']
+      include System::Import['core.ips', 'core.ip_checks', 'core.ip_states']
 
       input do
         required(:id).filled(:integer)
@@ -37,31 +37,34 @@ module Core
       private
 
       def calculate_stats(ip_id:, from:, to:)
-        sql = <<~SQL
-          SELECT
-            COUNT(*) AS total_checks,
-            COUNT(*) FILTER (WHERE success) AS success_checks,
-            COUNT(*) FILTER (WHERE NOT success) AS failed_checks,
-            CASE WHEN COUNT(*) = 0 THEN 0.0 ELSE (COUNT(*) FILTER (WHERE NOT success) * 100.0 / COUNT(*)) END AS packet_loss_percent,
-            AVG(rtt_ms) FILTER (WHERE success) AS avg_rtt_ms,
-            MIN(rtt_ms) FILTER (WHERE success) AS min_rtt_ms,
-            MAX(rtt_ms) FILTER (WHERE success) AS max_rtt_ms,
-            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY rtt_ms) FILTER (WHERE success) AS median_rtt_ms,
-            STDDEV_POP(rtt_ms) FILTER (WHERE success) AS stddev_rtt_ms
-          FROM ip_checks ic
-          WHERE ic.ip_id = :ip_id
-            AND ic.checked_at >= :from
-            AND ic.checked_at < :to
-            AND EXISTS (
-              SELECT 1 FROM ip_states
-              WHERE ip_id = ic.ip_id
-                AND state = 'enabled'
-                AND started_at <= ic.checked_at
-                AND COALESCE(ended_at, 'infinity'::timestamptz) > ic.checked_at
-            )
-        SQL
+        ip_states_ds = ip_states.dataset
 
-        row = db.fetch(sql, ip_id: ip_id, from: from, to: to).first
+        ds = ip_checks.dataset
+          .where(ip_id: ip_id)
+          .where { checked_at >= from }
+          .where { checked_at < to }
+          .where do
+            exists(
+              ip_states_ds
+                .where(ip_id: ip_id)
+                .where(state: 'enabled')
+                .where { started_at <= checked_at }
+                .where { coalesce(ended_at, Sequel.lit("'infinity'::timestamptz")) > checked_at }
+                .select(1)
+            )
+          end
+
+        row = ds.select(
+          Sequel.function(:count, Sequel.lit('*')).as(:total_checks),
+          Sequel.lit('COUNT(*) FILTER (WHERE success)').as(:success_checks),
+          Sequel.lit('COUNT(*) FILTER (WHERE NOT success)').as(:failed_checks),
+          Sequel.lit('CASE WHEN COUNT(*) = 0 THEN 0.0 ELSE (COUNT(*) FILTER (WHERE NOT success) * 100.0 / COUNT(*)) END').as(:packet_loss_percent),
+          Sequel.lit('AVG(rtt_ms) FILTER (WHERE success)').as(:avg_rtt_ms),
+          Sequel.lit('MIN(rtt_ms) FILTER (WHERE success)').as(:min_rtt_ms),
+          Sequel.lit('MAX(rtt_ms) FILTER (WHERE success)').as(:max_rtt_ms),
+          Sequel.lit('PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY rtt_ms) FILTER (WHERE success)').as(:median_rtt_ms),
+          Sequel.lit('STDDEV_POP(rtt_ms) FILTER (WHERE success)').as(:stddev_rtt_ms)
+        ).first
 
         {
           total_checks: row[:total_checks].to_i,

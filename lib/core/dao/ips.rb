@@ -1,6 +1,8 @@
 module Core
   module Dao
     class Ips
+      attr_reader :dataset
+
       def initialize(db:)
         @db = db
         @dataset = @db[:ips]
@@ -23,10 +25,6 @@ module Core
 
       def scope
         @dataset.where(deleted_at: nil)
-      end
-
-      def list
-        scope.all.map { |row| build_entity(row) }
       end
 
       private

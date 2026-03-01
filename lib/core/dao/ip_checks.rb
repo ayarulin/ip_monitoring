@@ -1,6 +1,8 @@
 module Core
   module Dao
     class IpChecks
+      attr_reader :dataset
+
       def initialize(db:)
         @db = db
         @dataset = @db[:ip_checks]
@@ -21,9 +23,6 @@ module Core
         build_entity(row)
       end
 
-      def list
-        @dataset.all.map { |row| build_entity(row) }
-      end
 
       private
 
